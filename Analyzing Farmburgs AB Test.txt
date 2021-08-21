@@ -1,0 +1,163 @@
+# Import libraries
+import codecademylib3
+import pandas as pd
+import numpy as np
+
+# Read in the `clicks.csv` file as `abdata`
+abdata = pd.read_csv('clicks.csv')
+
+'''
+Question 1
+Brian ran an A/B test with three different groups: A, B, and C. He has provided us with a CSV file of his results named clicks.csv. It has the following columns:
+
+user_id: a unique id for each visitor to the FarmBurg site
+group: either 'A', 'B', or 'C' depending on which group the visitor was assigned to
+is_purchase: either 'Yes' if the visitor made a purchase or 'No' if they did not.
+We’ve already imported pandas as pd and loaded clicks.csv as abdata. Inspect the data using the .head() method.
+
+Question 2
+Note that we have two categorical variables: group and is_purchase. We are interested in whether visitors are more likely to make a purchase if they are in any one group compared to the others. Because we want to know if there is an association between two categorical variables, we’ll start by using a Chi-Square test to address our question.
+
+In order to run a Chi-Square test, we first need to create a contingency table of the variables group and is_purchase. Use pd.crosstab() to create this table and name the result Xtab, then print it out. Which group appears to have the highest number of purchases?
+
+Question 3
+To conduct the Chi-Square Test, import chi2_contingency from scipy.stats.
+
+Then, use the function chi2_contingency with the data in Xtab to calculate the p-value. Remember that of the four values returned by chi2_contingency, the p-value is the second value.
+
+Save the p-value to a variable named pval and print the result. Using a significance threshold of 0.05, is there a significant difference in the purchase rate for groups A, B, and C?
+
+Note that you might see a number in scientific notation. For example, 1.234e-8 is equal to 0.00000001234 (we move the decimal to the left by 8 places and insert zeros).
+
+Question 4
+ur day is a little less busy than expected, so we decide to ask Brian about his test.
+
+Us: Hey Brian! What was that test you were running anyway?
+
+Brian: We are trying to get users to purchase a small FarmBurg upgrade package. It’s called a microtransaction. We’re not sure how much to charge for it, so we tested three different price points: $0.99 (group 'A'), $1.99 (group 'B'), and $4.99 (group 'C'). It looks like significantly more people bought the upgrade package for $0.99, so I guess that’s what we’ll charge.
+
+Us: Oh no! We should have asked you this before we did that Chi-Square test. That wasn’t the right test at all. It’s true that more people wanted to purchase the upgrade at $0.99; you probably expected that. What we really want to know is whether each price point allows us to make enough money that we can exceed some target goal. Brian, how much do you think it cost to build this feature?
+
+Brian: Hmm. I guess that we need to generate a minimum of $1000 in revenue per week in order to justify this project.
+
+Us: We have some work to do!
+
+In order to justify this feature, we will need to calculate the necessary purchase rate for each price point. Let’s start by calculating the number of visitors to the site this week.
+
+It turns out that Brian ran his original test over the course of a week, so the number of visitors in abdata is equal to the number of visitors in a typical week. Calculate the number of visitors in the data and save the value in a variable named num_visits. Make sure to print the value.
+
+Question 5
+
+Now that we know how many visitors we generally get each week (num_visits), we need to calculate the number of visitors who would need to purchase the upgrade package at each price point ($0.99, $1.99, $4.99) in order to generate Brian’s minimum revenue target of $1,000 per week.
+
+To start, calculate the number of sales that would be needed to reach $1,000 dollars of revenue at a price point of $0.99. Save the result as num_sales_needed_099 and print it out.
+
+Question 6
+Now that we know how many sales we need at a $0.99 price point, calculate the proportion of weekly visitors who would need to make a purchase in order to meet that goal. Remember that the number of weekly visitors is saved as num_visits. Save the result as p_sales_needed_099 and print it out.
+
+Question 7
+Repeat the steps from tasks 5 and 6 for the other price points ($1.99 and $4.99). Save the number of sales needed for each price point as num_sales_needed_199 and num_sales_needed_499, respectively. Then, save the proportion of visits needed as p_sales_needed_199 and p_sales_needed_499, respectively.
+
+Print out the proportions. Note that for higher price points, you’ll need to sell fewer upgrade packages in order to meet your minimum revenue target — so the proportions should decrease as the price points increase.
+
+Question 8
+Now let’s return to Brian’s question. To start, we want to know if the percent of Group A (the $0.99 price point) that purchased an upgrade package is significantly greater than p_sales_needed_099 (the percent of visitors who need to buy an upgrade package at $0.99 in order to make our minimum revenue target of $1,000).
+
+To answer this question, we want to focus on just the visitors in group A. Then, we want to compare the number of purchases in that group to p_sales_needed_099.
+
+Since we have a single sample of categorical data and want to compare it to a hypothetical population value, a binomial test is appropriate. In order to run a binomial test for group A, we need to know two pieces of information:
+
+The number of visitors in group A (the number of visitors who were offered the $0.99 price point)
+The number of visitors in Group A who made a purchase
+Calculate these two numbers and save them as samp_size_099 and sales_099, respectively. Note that you can use the contingency table that you printed earlier to get these numbers OR you can use Python syntax.
+
+Question 9
+Calculate the sample size and number of purchases in group B (the $1.99 price point) and save them as samp_size_199 and sales_199, respectively. Then do the same for group C (the $4.99 price point) and save them as samp_size_499 and sales_499, respectively.
+
+Question 10
+
+For Group A ($0.99 price point), perform a binomial test using binom_test() to see if the observed purchase rate is significantly greater than p_sales_needed_099. Remember that there are four inputs to binom_test():
+
+x will be the number of purchases for Group A
+n will be the total number of visitors assigned group A
+p will be the target percent of purchases for the $0.99 price point
+alternative will indicate the alternative hypothesis for this test; in this case, we want to know if the observed purchase rate is significantly 'greater' than the purchase rate that results in the minimum revenue target.
+Save the results to pvalueA, and print its value. Note that you’ll first need to import the binom_test() function from scipy.stats using the following line of code:
+
+Question 11
+For Group B ($1.99 price point), perform a binomial test to see if the observed purchase rate is significantly greater than p_sales_needed_199.
+Save the results to pvalueB, and print its value.
+
+Question 12
+For Group C ($4.99 price point), perform a binomial test to see if the observed purchase rate is significantly greater than p_sales_needed_499.
+Save the results to pvalueC, and print its value.
+
+Question 13
+Based on the three p-values you calculated for the binomial tests in each group and a significance threshold of 0.05, were there any groups where the purchase rate was significantly higher than the target? Based on this information, what price should Brian charge for the upgrade package?
+
+'''
+
+#Question 1
+print(abdata.head())
+
+#Question 2
+Xtab = pd.crosstab(abdata.group,abdata.is_purchase)
+print(Xtab)
+
+#Question 3
+from scipy.stats import chi2_contingency
+chi2, pval, dof, expected = chi2_contingency(Xtab)
+print(pval) #2.4126213546684264e-35
+
+#Question 4
+num_visits = len(abdata)
+print("Total Number of Visits: " + str(num_visits))
+
+#Question 5
+num_sales_needed_099 = 1000/0.99
+print("Total Sales Needed ($0.99)" + str(num_sales_needed_099)) #1010.10 so 1011
+
+#Question 6
+p_sales_needed_099 = num_sales_needed_099 / num_visits
+print("Porportion Sales Needed ($0.99): " + str(p_sales_needed_099)) #0.2021 or 21%
+
+#Question 7
+num_sales_needed_199 = 1000/1.99
+num_sales_needed_499 = 1000/4.99
+
+p_sales_needed_199 = num_sales_needed_199 / num_visits
+p_sales_needed_499 = num_sales_needed_499 / num_visits
+print("Porportion Sales Needed ($1.99): " + str(p_sales_needed_199)) #0.10054 or 10%
+print("Porportion Sales Needed ($4.99): " + str(p_sales_needed_499)) #0.04009 or 4%
+
+#Question 8
+samp_size_099 = np.sum(abdata.group == 'A')
+sales_099 = np.sum((abdata.group == 'A') & (abdata.is_purchase == 'Yes'))
+
+#Question 9
+samp_size_199 = np.sum(abdata.group == 'B')
+sales_199 = np.sum((abdata.group == 'B') & (abdata.is_purchase == 'Yes'))
+
+samp_size_499 = np.sum(abdata.group == 'C')
+sales_499 = np.sum((abdata.group == 'C') & (abdata.is_purchase == 'Yes'))
+
+#Question 10 
+from scipy.stats import binom_test
+pvalueA = binom_test(x = sales_099, n = samp_size_099, p = p_sales_needed_099, alternative = 'greater')
+print("Pvalue ($0.99): " + str(pvalueA))
+
+#Question 11
+pvalueB = binom_test(x = sales_199, n = samp_size_199, p = p_sales_needed_199, alternative = 'greater')
+print("Pvalue ($1.99): " + str(pvalueB))
+
+#Question 12
+pvalueC = binom_test(x = sales_499, n = samp_size_499, p = p_sales_needed_499, alternative = 'greater')
+print("Pvalue ($4.99): " + str(pvalueC))
+
+#Question 13
+'''
+Group C's Pvalue is the only group that is significantly lower than the threshold 0.05 and should be the price used for the upgrade package. The purchase rate is signifcantly higher than the target needed to reach $1000 revenue per week. 
+'''
+
+
+
