@@ -1,0 +1,143 @@
+'''
+Question 1
+First, familiarize yourself with the dataset here(https://www.kaggle.com/uciml/pima-indians-diabetes-database).
+Look at each of the nine columns in the documentation.
+What do you expect each data type to be?
+
+Question 2
+Next, let’s load in the diabetes data to start exploring.
+Load the data in a variable called diabetes_data and print the first few rows.
+Note: The data is stored in a file called diabetes.csv.
+
+Question 3
+How many columns (features) does the data contain?
+
+Quesetion 4
+How many rows (observations) does the data contain?
+
+Question 5
+Let’s inspect diabetes_data further.
+Do any of the columns in the data contain null (missing) values?
+
+Question 6
+If you answered no to the question above, not so fast!
+While it’s technically true that none of the columns contain null values, that doesn’t necessarily mean that the data isn’t missing any values.
+When exploring data, you should always question your assumptions and try to dig deeper.
+To investigate further, calculate summary statistics on diabates_data using the .describe() method.
+
+Question 7
+Looking at the summary statistics, do you notice anything odd about the following columns?
+ Glucose
+ BloodPressure
+ SkinThickness
+ Insulin
+ BMI
+
+Question 8 
+Do you spot any other outliers in the data? 
+
+Question 9
+Let’s see if we can get a more accurate view of the missing values in the data.
+Use the following code to replace the instances of 0 with NaN in the five columns mentioned: (in Q9)
+
+Question 10
+Next, check for missing (null) values in all of the columns just like you did in Step 5.
+Now how many missing values are there?
+
+Question 11
+Let’s take a closer look at these rows to get a better idea of why some data might be missing.
+Print out all of the rows that contain missing (null) values.
+
+Question 12
+Go through the rows with missing data. Do you notice any patterns or overlaps between the missing data?
+
+Question 13
+Next, take a closer look at the data types of each column in diabetes_data.
+Does the result match what you would expect?
+
+Question 14
+To figure out why the Outcome column is of type object (string) instead of type int64, print out the unique values in the Outcome column.
+
+Question 15
+How might you resolve this issue?
+
+Question 16
+Congratulations! In this project, you saw how EDA can help with the initial data inspection and cleaning process. This is an important step as it helps to keep your datasets clean and reliable.
+
+Here are some ways you might extend this project if you’d like:
+
+Use .value_counts() to more fully explore the values in each column.
+Investigate other outliers in the data that may be easily overlooked.
+Instead of changing the 0 values in the five columns to NaN, try replacing the values with the median or mean of each column.
+
+'''
+
+import codecademylib3
+import pandas as pd
+import numpy as np
+
+#Question 1
+#Click link https://www.kaggle.com/uciml/pima-indians-diabetes-database
+
+#Question 2
+diabetes_data = pd.read_csv('diabetes.csv')
+print(diabetes_data.head())
+
+#Question 3
+# There are 9 columns in this dataset
+
+#Question 4
+# There are 5 rows in this dataset
+
+#Question 5
+info_data = diabetes_data.info()
+print(info_data)
+
+#Question 6
+describe_data = diabetes_data.describe()
+print(describe_data)
+
+#Question 7 & 8 
+#Some of the numbers are out of the range for normalcy 
+#Min should not be 0 
+
+#Question 9 
+diabetes_data[['Glucose','BloodPressure','SkinThickness','Insulin','BMI']] = diabetes_data[['Glucose','BloodPressure','SkinThickness','Insulin','BMI']].replace(0,np.NaN)
+
+#Question 10
+info_data2 = diabetes_data.info()
+print(info_data2)
+# Missing Data:
+# Glucose = 5
+# BloodPressure = 35
+# SkinThickness = 277
+# Insulin = 374
+# BMI = 11
+
+#Question 11
+print(diabetes_data[diabetes_data.isnull().any(axis=1)])
+
+#Question 12
+#Most entries that are missing data have missing data in more than one column
+
+#Question 13
+types_data = diabetes_data.dtypes
+print(types_data)
+#Yes, outcome is an object though even though it should be binary (0,1)
+
+#Question 14
+unique_data = diabetes_data.Outcome.unique()
+print(unique_data)
+#There's an O instead of 0 in the data
+
+#Question 15
+#I would resolve this issue by replacing the O's with 0s
+diabetes_data['Outcome'] = diabetes_data['Outcome'].replace('O','0')
+
+unique_data = diabetes_data.Outcome.unique()
+print(unique_data)
+
+diabetes_data['Outcome'] = pd.to_numeric(diabetes_data['Outcome'])
+
+types_data = diabetes_data.dtypes
+print(types_data) #Outcome is now int64 
